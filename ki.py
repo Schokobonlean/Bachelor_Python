@@ -7,3 +7,5 @@ def infer(prompt):
     output = loaded_model.generate(input_ids, max_new_tokens = 40)
     response = loaded_tokenizer.decode(output[0], no_repeat_ngram_size=2, skip_special_tokens=True)
     return response
+
+print(infer("HTTP STATUS CODE: 404"))
