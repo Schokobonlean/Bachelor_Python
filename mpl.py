@@ -1,60 +1,50 @@
 import requests
-import json
-from bs4 import BeautifulSoup
-import re
+import xml.dom.minidom
+import xml.etree.ElementTree as ET
+
+class Entry:
+    def __init__(self, message_guid, iflow_name, error_text, ki_response):
+        self.message_guid = message_guid
+        self.iflow_name = iflow_name
+        self.error_text = error_text
+        self.ki_response = ki_response
 
 beginning_period = "2024-02-01T00:00:00"
-end_period = "2024-02-14T00:00:00"
-
+end_period = "2024-02-01T00:00:45"
 host = "https://cbsintegration.it-cpi001.cfapps.eu10.hana.ondemand.com"
 username = "S0019518955"
 password = "80W{}>ER"
 
 def get_mpls():
 
-    host_url = f"{host}/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED' and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'"
+    mpl_url = f"{host}/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED' and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'&$select=MessageGuid,IntegrationFlowName"
     session = requests.Session()
 
     try:
-        response = session.get(host_url, headers={
-            #"DataServiceVersion": "2.0",
-            #"Accept": "application/json"
-        },auth=(username, password))
-
+        response = session.get(mpl_url,auth=(username, password))
         response.raise_for_status()
-
-        print(response.text)
+        #xml_content = xml.dom.minidom.parseString(response.text)
+        #print(xml_content.toprettyxml())
 
     except requests.exceptions.RequestException as e:
-        print(e)
         raise e
     
+    root = ET.fromstring(response.text)
+    entries = []
+    for entry_elem in root.findall(".//{http://www.w3.org/2005/Atom}entry"):
+        message_guid = entry_elem.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices}MessageGuid").text
+        iflow_name = entry_elem.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices}IntegrationFlowName").text
+        entries.append(Entry(message_guid, iflow_name, None, None))
 
-mock_api = "https://sandbox.api.sap.com"
-mock_api_key = "tEDvfAhpREXAcCDwNAOpWGoUHla8BFCh"
-
-def get_mpls_mock():
-
-    mock_url = f"{mock_api}/cpi/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED' and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'"
-    
-    try:
-        response = requests.get(mock_url, headers={
-            "APIKey": mock_api_key,
-            "DataServiceVersion": "2.0",
-            "Accept": "application/json"
-        })
-
-        response.raise_for_status()
-        responseData = response.json()['d']
-
-        print(json.dumps(responseData, indent=4))
-
-        return responseData
-
-    except requests.exceptions.RequestException as e:
-        print("Error fetching message processing logs:", e)
-        raise e
-
+    for entry in entries:
+        error_url = f"{host}/api/v1/MessageProcessingLogs('{entry.message_guid}')/ErrorInformation/$value"
+        try:
+            response = session.get(error_url,auth=(username, password))
+            response.raise_for_status()
+            entry.error_text = response.text
+        except requests.exceptions.RequestException as e:
+            raise e
+        print("Name: "+entry.iflow_name+"\nGUID`: "+entry.message_guid+"\nError Text:\n"+entry.error_text+"\n\n")
 get_mpls()
 
 
