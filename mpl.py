@@ -3,11 +3,12 @@ import xml.etree.ElementTree as ET
 import secret_file
 
 class Entry:
-    def __init__(self, message_guid, iflow_name, error_text, ki_response):
+    def __init__(self, message_guid = None, iflow_name = None, error_text = None, ki_response = None, in_charge = None):
         self.message_guid = message_guid
         self.iflow_name = iflow_name
         self.error_text = error_text
         self.ki_response = ki_response
+        self.in_charge = in_charge
 
 beginning_period = "2024-02-01T00:00:00"
 end_period = "2024-02-01T00:05:00"
@@ -32,7 +33,7 @@ def get_mpls():
     for entry_elem in root.findall(".//{http://www.w3.org/2005/Atom}entry"):
         message_guid = entry_elem.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices}MessageGuid").text
         iflow_name = entry_elem.find(".//{http://schemas.microsoft.com/ado/2007/08/dataservices}IntegrationFlowName").text
-        entries.append(Entry(message_guid, iflow_name, None, None))
+        entries.append(Entry(message_guid, iflow_name))
 
     for entry in entries:
         error_url = f"{host}/api/v1/MessageProcessingLogs('{entry.message_guid}')/ErrorInformation/$value"
@@ -42,5 +43,5 @@ def get_mpls():
             entry.error_text = response.text
         except requests.exceptions.RequestException as e:
             raise e
-        print("Name: "+entry.iflow_name+"\nGUID`: "+entry.message_guid+"\nError Text:\n"+entry.error_text+"\n\n")
-get_mpls()
+
+    return entries
