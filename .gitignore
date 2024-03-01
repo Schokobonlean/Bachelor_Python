@@ -1,6 +1,7 @@
 /components/model_and_tokenizer
-
+secret_file.py
 # Byte-compiled / optimized / DLL files
+*.pyc
 __pycache__/
 *.py[cod]
 *$py.class

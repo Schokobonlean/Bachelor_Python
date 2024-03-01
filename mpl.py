@@ -1,6 +1,6 @@
 import requests
-import xml.dom.minidom
 import xml.etree.ElementTree as ET
+import secret_file
 
 class Entry:
     def __init__(self, message_guid, iflow_name, error_text, ki_response):
@@ -10,10 +10,10 @@ class Entry:
         self.ki_response = ki_response
 
 beginning_period = "2024-02-01T00:00:00"
-end_period = "2024-02-01T00:00:45"
+end_period = "2024-02-01T00:05:00"
 host = "https://cbsintegration.it-cpi001.cfapps.eu10.hana.ondemand.com"
-username = "S0019518955"
-password = "80W{}>ER"
+username = secret_file.username
+password = secret_file.password
 
 def get_mpls():
 
