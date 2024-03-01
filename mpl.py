@@ -23,8 +23,6 @@ def get_mpls():
     try:
         response = session.get(mpl_url,auth=(username, password))
         response.raise_for_status()
-        #xml_content = xml.dom.minidom.parseString(response.text)
-        #print(xml_content.toprettyxml())
 
     except requests.exceptions.RequestException as e:
         raise e
@@ -46,49 +44,3 @@ def get_mpls():
             raise e
         print("Name: "+entry.iflow_name+"\nGUID`: "+entry.message_guid+"\nError Text:\n"+entry.error_text+"\n\n")
 get_mpls()
-
-
-"""
-
-notes
- - if i need to access the custom header properties: https://<host address>/api/v1/MessageProcessingLogs('ABCD-1234-XYZ')​/CustomHeaderProperties'
-
- response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        redirection_script = soup.find('script').get_text()
-        url_pattern = r"location=['\"]([^'\"]+)['\"]"
-        matching_url = re.search(url_pattern, redirection_script).group(1)
-
-        response = session.get(matching_url)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        auth_url = soup.find_all('a', class_='saml-login-link')[0].get('href')
-
-        response = session.get(auth_url)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        login_form = soup.find('form', id='logOnForm')
-        form_data = {}
-        for input_tag in login_form.find_all('input'):
-            if input_tag.get('name'):
-                form_data[input_tag['name']] = input_tag.get('value', '')
-        form_data['j_username'] = username
-
-        response = session.post(auth_url, data=form_data)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        login_form = soup.find('form', id='logOnForm')
-        form_data = {}
-        for input_tag in login_form.find_all('input'):
-            if input_tag.get('name'):
-                form_data[input_tag['name']] = input_tag.get('value', '')
-        form_data['j_password'] = password
-
-        response = session.post(auth_url, data=form_data)
-        response.raise_for_status()
-
-"""
