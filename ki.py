@@ -4,6 +4,10 @@ loaded_model = AutoModelForCausalLM.from_pretrained("components\model_and_tokeni
 
 def infer(prompt):
     input_ids = loaded_tokenizer(prompt, return_tensors="pt")
-    output = loaded_model.generate(input_ids["input_ids"], max_new_tokens = 40, attention_mask=input_ids["attention_mask"], pad_token_id = loaded_tokenizer.eos_token_id)
+    output = loaded_model.generate(input_ids["input_ids"], max_new_tokens = 120, attention_mask=input_ids["attention_mask"], pad_token_id = loaded_tokenizer.eos_token_id,  no_repeat_ngram_size=2)
     response = loaded_tokenizer.decode(output[0], no_repeat_ngram_size=2, skip_special_tokens=True)
+    response = response[response.find("\n"):].strip()
+    if response.rfind(".") != -1:
+        response = response[:response.rfind(".")]+"."
+    print("Fixed: "+response+"\n\n\n\n")
     return response
