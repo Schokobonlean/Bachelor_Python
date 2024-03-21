@@ -17,4 +17,11 @@ def fix_questions():
             for line in lines:
                     database_file.write(line.replace("### Question: ", "### Question: Give me Advice on the folling mpl error: "))
 
-create_database()
+def create_validation():
+    with open("database.txt", "r") as file:
+        lines = file.readlines()
+        with open("validation.txt", "w") as database_file:
+            for i in range(len(lines)):
+                if i % 5 == 0:
+                    database_file.write(lines[i])
+create_validation()

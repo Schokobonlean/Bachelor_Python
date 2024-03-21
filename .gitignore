@@ -1,7 +1,7 @@
 /components/model_and_tokenizer
 secret_file.py
 /mpls/
-database.txt
+/data/
 # Byte-compiled / optimized / DLL files
 *.pyc
 __pycache__/
