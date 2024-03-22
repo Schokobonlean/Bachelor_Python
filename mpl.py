@@ -23,7 +23,7 @@ password = secret_file.client_password
 
 def get_mpls(host, beginning_period, end_period):
 
-    mpl_url = f"{host}/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED'"# and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'&$select=MessageGuid,IntegrationFlowName"
+    mpl_url = f"{host}/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED' and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'&$select=MessageGuid,IntegrationFlowName"
     session = requests.Session()
 
     try:

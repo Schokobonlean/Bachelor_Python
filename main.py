@@ -16,8 +16,8 @@ def get_message(entry):
 def main(start, end):
 
     host = secret_file.mpl_host
-    start = "2024-03-01T00:00:06"
-    end = "2024-03-01T00:00:05"
+    start = "2024-03-01T00:00:00"
+    end = "2024-03-01T00:00:10"
 
     entries = mpl.get_mpls(host, start, end)
     for entry in entries:
