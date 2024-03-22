@@ -9,5 +9,4 @@ def infer(prompt):
     response = response[response.find("\n"):].strip()
     if response.rfind(".") != -1:
         response = response[:response.rfind(".")]+"."
-    print("Fixed: "+response+"\n\n\n\n")
     return response

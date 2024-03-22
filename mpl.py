@@ -4,23 +4,24 @@ import secret_file
 import re
 
 class Entry:
-    def __init__(self, message_guid = None, iflow_name = None, error_text = None, ki_response = None, in_charge = None):
+    def __init__(self, message_guid = None, iflow_name = None, error_text = None, ki_response = None, in_charge = None, in_charge_mail = None):
         self.message_guid = message_guid
         self.iflow_name = iflow_name
         self.error_text = error_text
         self.ki_response = ki_response
         self.in_charge = in_charge
+        self.in_charge_mail = in_charge_mail
 
-beginning_period = "2024-03-01T00:00:06"
-end_period = "2024-03-01T00:00:05"
+"""
 home_host = "https://cbsintegration.it-cpi001.cfapps.eu10.hana.ondemand.com"
 client_host = "https://l100956-tmn.hci.eu1.hana.ondemand.com"
 client_host_prod = "https://l100957-tmn.hci.eu1.hana.ondemand.com"
-host = home_host
+"""
+
 username = secret_file.client_username
 password = secret_file.client_password
 
-def get_mpls():
+def get_mpls(host, beginning_period, end_period):
 
     mpl_url = f"{host}/api/v1/MessageProcessingLogs?$inlinecount=allpages&$filter=Status eq 'FAILED'"# and LogStart gt datetime'{beginning_period}' and LogEnd lt datetime'{end_period}'&$select=MessageGuid,IntegrationFlowName"
     session = requests.Session()
